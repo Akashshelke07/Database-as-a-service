@@ -11,10 +11,10 @@ class AIAssistantService {
   constructor() {
     this.databaseService = new DatabaseService();
     this.ai = new OpenAI({
-      apiKey: process.env.NVIDIA_API_KEY,
-      baseURL: 'https://integrate.api.nvidia.com/v1',
+      apiKey: process.env.GROQ_API_KEY,
+      baseURL: 'https://api.groq.com/openai/v1',
     });
-    this.model = 'meta/llama-3.3-70b-instruct';
+    this.model = 'llama3-70b-8192';
   }
 
   /**
@@ -54,7 +54,7 @@ class AIAssistantService {
   }
 
   /**
-   * Analyze user intent using NVIDIA LLM
+   * Analyze user intent using Groq LLM
    */
   async analyzeIntent(userMessage) {
     const systemPrompt = `You are an intent classifier for a Database-as-a-Service platform.
@@ -94,7 +94,7 @@ Return ONLY the JSON object, no explanation.`;
         };
       }
     } catch (error) {
-      logger.warn('NVIDIA intent analysis failed, falling back to keyword matching:', error.message);
+      logger.warn('Groq intent analysis failed, falling back to keyword matching:', error.message);
     }
 
     // Keyword fallback in case the LLM is unreachable
@@ -529,7 +529,7 @@ print(results)`
   }
 
   /**
-   * Enhance schema with AI descriptions via NVIDIA LLM
+   * Enhance schema with AI descriptions via Groq LLM
    */
   async enhanceSchemaWithAI(schema, engine) {
     try {

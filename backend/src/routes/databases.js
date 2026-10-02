@@ -106,6 +106,7 @@ router.post('/', authMiddleware, async (req, res) => {
     // Validate input
     const { error, value } = createDatabaseSchema.validate(req.body);
     if (error) {
+      logger.error('Create database validation error:', error.details, req.body);
       return res.status(400).json({
         error: 'Validation Error',
         details: error.details.map(d => d.message)

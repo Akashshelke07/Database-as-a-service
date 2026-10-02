@@ -37,7 +37,7 @@ services:
       - PROMETHEUS_URL=http://prometheus:9090
       - GMAIL_USER=testerhundread@gmail.com
       - GMAIL_APP_PASSWORD=nljk kscj zgra zkax
-      - NVIDIA_API_KEY=${NVIDIA_API_KEY}
+      - GROQ_API_KEY=${GROQ_API_KEY:-dummy-groq-api-key}
     depends_on:
       - postgres
       - redis

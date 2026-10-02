@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     last_login TIMESTAMP WITH TIME ZONE,
+    email_verified_at TIMESTAMP WITH TIME ZONE,
     is_active BOOLEAN DEFAULT TRUE
 );
 
@@ -53,7 +54,8 @@ CREATE TABLE IF NOT EXISTS pending_users (
     password_hash VARCHAR(255) NOT NULL,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    expires_at TIMESTAMP WITH TIME ZONE DEFAULT (NOW() + INTERVAL '24 hours')
 );
 
 CREATE INDEX IF NOT EXISTS idx_pending_users_email ON pending_users(email);
@@ -101,12 +103,15 @@ END;
 $$ language 'plpgsql';
 
 -- Apply triggers
+DROP TRIGGER IF EXISTS update_users_updated_at ON users;
 CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_projects_updated_at ON projects;
 CREATE TRIGGER update_projects_updated_at BEFORE UPDATE ON projects
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_databases_updated_at ON databases;
 CREATE TRIGGER update_databases_updated_at BEFORE UPDATE ON databases
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
@@ -126,7 +131,7 @@ INSERT INTO users (username, email, password_hash, first_name, last_name)
 VALUES (
     'admin', 
     'admin@example.com', 
-    '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LeiwqQ8L8/6Zp6jPy', -- password: admin123
+    '$2a$10$sXc2yhTT3.K2xfCT6YK.u.O3vKL9tDK2ULAH0RxT7oJVqYSvX.poy', -- password: admin123
     'Admin', 
     'User'
 ) ON CONFLICT (email) DO NOTHING;

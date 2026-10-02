@@ -76,13 +76,20 @@ const CreateDatabase = () => {
   }
 
   const onSubmit = (data) => {
-    createMutation.mutate({
+    const payload = {
       ...data,
       storage: parseInt(data.storage),
       cpu: parseFloat(data.cpu),
       memory: parseInt(data.memory),
       replicas: parseInt(data.replicas)
-    })
+    };
+    
+    // Remove empty projectId to avoid backend UUID validation failure
+    if (!payload.projectId) {
+      delete payload.projectId;
+    }
+    
+    createMutation.mutate(payload)
   }
 
   return (
@@ -143,8 +150,8 @@ const CreateDatabase = () => {
                   required: 'Database name is required',
                   minLength: { value: 3, message: 'Name must be at least 3 characters' },
                   pattern: {
-                    value: /^[a-zA-Z0-9-]+$/,
-                    message: 'Name can only contain letters, numbers, and hyphens'
+                    value: /^[a-z][a-z0-9_]{2,29}$/,
+                    message: 'Name must start with a lowercase letter and contain only lowercase letters, numbers, and underscores'
                   }
                 })}
               />

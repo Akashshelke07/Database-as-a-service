@@ -9,10 +9,10 @@ class AnomalyDetectionService {
     this.pool = pool;
     this.databaseService = new DatabaseService();
     this.ai = new OpenAI({
-      apiKey: process.env.NVIDIA_API_KEY,
-      baseURL: 'https://integrate.api.nvidia.com/v1',
+      apiKey: process.env.GROQ_API_KEY,
+      baseURL: 'https://api.groq.com/openai/v1',
     });
-    this.model = 'meta/llama-3.3-70b-instruct';
+    this.model = 'llama3-70b-8192';
   }
 
   async computeBaseline(database) {
